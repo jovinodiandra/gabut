@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diary Bestie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Caveat:wght@600;700&family=Quicksand:wght@400;500;600;700&display=swap">
+<style>
+  :root {
+    --paper: #fdf3f2;
+    --card: #ffffff;
+    --card-tint: #fbe4e8;
+    --pink: #e79aad;
+    --pink-deep: #c97690;
+    --pink-soft: #f6dbe2;
+    --peach: #f0c9bd;
+    --mint: #9dc3b8;
+    --mint-soft: #e2ede9;
+    --ink: #3d2f33;
+    --ink-soft: #8a7680;
+    --line: rgba(201, 118, 144, 0.18);
+    --shadow: rgba(90, 60, 40, 0.12);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #251c20;
+      --card: #302428;
+      --card-tint: #3d2c31;
+      --pink: #e8a9ba;
+      --pink-deep: #f0c3d0;
+      --pink-soft: #4a333b;
+      --peach: #e8bfae;
+      --mint: #a7c9bf;
+      --mint-soft: #33423d;
+      --ink: #f5eaec;
+      --ink-soft: #c9b3bb;
+      --line: rgba(240, 195, 208, 0.22);
+      --shadow: rgba(0, 0, 0, 0.42);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #251c20;
+    --card: #302428;
+    --card-tint: #3d2c31;
+    --pink: #e8a9ba;
+    --pink-deep: #f0c3d0;
+    --pink-soft: #4a333b;
+    --peach: #e8bfae;
+    --mint: #a7c9bf;
+    --mint-soft: #33423d;
+    --ink: #f5eaec;
+    --ink-soft: #c9b3bb;
+    --line: rgba(240, 195, 208, 0.22);
+    --shadow: rgba(0, 0, 0, 0.42);
+  }
+
+  * { box-sizing: border-box; }
+  svg.icon { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; vertical-align: -0.15em; }
+  svg.icon.filled { fill: currentColor; stroke: none; }
+
+  body {
+    background-color: var(--paper);
+    background-image: radial-gradient(circle, color-mix(in srgb, var(--pink) 45%, transparent) 1.4px, transparent 1.4px);
+    background-size: 26px 26px;
+    color: var(--ink);
+    font-family: 'Quicksand', 'Trebuchet MS', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .placeholder-photo, .tl-card, .ff-badge, .cork-note, .track, .polaroid-frame { transition: none !important; }
+  }
+
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 28px; }
+
+  /* ---------------- Nav ---------------- */
+  .site-nav {
+    position: sticky; top: 0; z-index: 40;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .site-nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .logo {
+    font-family: 'Caveat', cursive; font-weight: 700; font-size: 1.6rem;
+    color: var(--pink-deep); display: flex; align-items: center; gap: 6px;
+  }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links button {
+    background: none; border: none; color: var(--ink-soft);
+    font-size: 0.92rem; font-weight: 600; padding: 6px 2px; position: relative; font-family: 'Quicksand', sans-serif;
+  }
+  .nav-links button.active { color: var(--pink-deep); }
+  .nav-links button.active::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -22px; height: 2px;
+    background: var(--pink); border-radius: 2px;
+  }
+  .nav-star {
+    width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    background: var(--pink-soft); color: var(--pink-deep); border: none; flex-shrink: 0; font-size: 1rem;
+  }
+  .nav-right { display: flex; align-items: center; gap: 8px; }
+  .nav-toggle {
+    display: none; width: 40px; height: 40px; border-radius: 50%; align-items: center; justify-content: center;
+    background: none; border: 1.5px solid var(--line); color: var(--ink); flex-shrink: 0; font-size: 1.1rem;
+  }
+  @media (max-width: 720px) {
+    .nav-links { display: none; }
+    .nav-toggle { display: flex; }
+  }
+  .nav-mobile {
+    display: none; flex-direction: column; gap: 2px; padding: 8px 20px 18px;
+    background: var(--paper); border-bottom: 1px solid var(--line);
+  }
+  .nav-mobile.open { display: flex; }
+  .nav-mobile button {
+    background: none; border: none; text-align: left; padding: 12px 10px; border-radius: 10px;
+    font-family: 'Quicksand', sans-serif; font-weight: 600; font-size: 1rem; color: var(--ink-soft);
+  }
+  .nav-mobile button.active { color: var(--pink-deep); background: var(--pink-soft); }
+  @media (min-width: 721px) { .nav-mobile { display: none !important; } }
+
+  @media (max-width: 420px) { .wrap { padding: 0 18px; } }
+
+  main { display: block; }
+  section.page { display: block; padding: 56px 0 90px; position: relative; scroll-margin-top: 84px; border-bottom: 1px dashed var(--line); }
+  section.page:last-child { border-bottom: none; }
+
+  /* only Beranda shows until "Mulai Jelajahi" (or a nav link) unlocks the rest */
+  section.page:not(#page-home) { display: none; }
+  body.unlocked section.page:not(#page-home) { display: block; }
+  #page-home { border-bottom: none; }
+  body.unlocked #page-home { border-bottom: 1px dashed var(--line); }
+
+  /* ---------------- Shared ---------------- */
+  .eyebrow-divider { display: flex; align-items: center; justify-content: center; gap: 12px; color: var(--pink); margin-bottom: 18px; }
+  .eyebrow-divider .l { width: 46px; height: 1px; background: linear-gradient(90deg, transparent, var(--pink)); }
+  .eyebrow-divider .l.r { background: linear-gradient(90deg, var(--pink), transparent); }
+
+  .section-head { text-align: center; max-width: 520px; margin: 0 auto 44px; }
+  .section-head h2 {
+    font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: clamp(1.9rem, 4vw, 2.5rem);
+    margin: 0 0 10px; text-wrap: balance;
+  }
+  .section-head p { color: var(--ink-soft); margin: 0; font-size: 0.98rem; }
+
+  .head-sticker {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 42px; height: 42px; border-radius: 50%; margin-bottom: 12px;
+    background: var(--pink-soft); color: var(--pink-deep);
+    box-shadow: 0 8px 16px var(--shadow); font-size: 1.15rem;
+  }
+  .head-sticker.r1 { transform: rotate(-10deg); }
+  .head-sticker.r2 { transform: rotate(9deg); background: var(--mint-soft); color: var(--mint); }
+  .head-sticker.r3 { transform: rotate(-7deg); background: color-mix(in srgb, var(--peach) 55%, var(--card)); color: var(--pink-deep); }
+
+  /* ---------------- hover micro-interactions ---------------- */
+  .placeholder-photo, .tl-card, .ff-badge, .cork-note, .track, .polaroid-frame {
+    transition: transform .22s ease, box-shadow .22s ease, background-color .22s ease;
+  }
+  .gallery-grid .placeholder-photo:hover,
+  /*.hero-photo:hover,*/
+  .tl-photo:hover { transform: scale(1.035) rotate(-1deg); box-shadow: 0 16px 28px var(--shadow); }
+  .tl-card:hover { transform: translateY(-4px); box-shadow: 0 14px 26px var(--shadow); }
+  .track:hover { background: var(--pink-soft); border-radius: 10px; }
+  .polaroid-frame:hover { transform: rotate(0deg) scale(1.02); }
+  .ff-badge:hover { transform: translateY(-3px) scale(1.03) !important; box-shadow: 0 12px 22px var(--shadow); }
+  .cork-note:hover { transform: translateY(-4px) scale(1.02) rotate(0deg) !important; box-shadow: 0 16px 26px var(--shadow); }
+
+  /* ---------------- Fun Facts & Corkboard ---------------- */
+  .ff-title {
+    text-align: center; font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 1.25rem;
+    margin: 0 0 22px; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--ink);
+  }
+  .ff-title svg { color: var(--pink-deep); }
+  .fun-facts { margin-top: 54px; }
+  .ff-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+  .ff-badge {
+    display: flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 999px;
+    background: var(--card); box-shadow: 0 8px 18px var(--shadow); font-weight: 700; font-size: 0.85rem;
+    font-family: 'Baloo 2', sans-serif; color: var(--ink);
+  }
+  .ff-badge svg { color: var(--pink-deep); }
+  .ff-badge.tone-b { transform: rotate(-2deg); } .ff-badge.tone-b svg { color: var(--mint); }
+  .ff-badge.tone-c { transform: rotate(2deg); } .ff-badge.tone-c svg { color: var(--peach); }
+
+  .corkboard { margin-top: 54px; }
+  .cork-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 22px; margin-top: 6px; }
+  .cork-note {
+    width: 200px; padding: 20px 16px 16px; border-radius: 4px; font-family: 'Caveat', cursive; font-size: 1.15rem;
+    line-height: 1.35; color: var(--ink); box-shadow: 0 10px 20px var(--shadow); position: relative;
+  }
+  .cork-note::before {
+    content: ""; position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
+    width: 12px; height: 12px; border-radius: 50%; background: var(--pink-deep); box-shadow: 0 2px 4px var(--shadow);
+  }
+  .cork-note span { display: block; margin-top: 10px; font-size: 0.95rem; color: var(--ink-soft); font-style: italic; }
+  .cork-note.tone-a { background: var(--pink-soft); transform: rotate(-3deg); }
+  .cork-note.tone-b { background: var(--mint-soft); transform: rotate(2deg); }
+  .cork-note.tone-c { background: var(--card-tint); transform: rotate(-1.5deg); }
+
+  .placeholder-photo {
+    border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; color: rgba(255,255,255,0.95); position: relative; overflow: hidden;
+    background-image: linear-gradient(135deg, var(--pink) 0%, var(--peach) 100%);
+  }
+  .placeholder-photo .lbl { font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.9; text-shadow: 0 1px 4px rgba(0,0,0,.45); }
+  .placeholder-photo.tone-b { background-image: linear-gradient(135deg, var(--mint) 0%, var(--pink) 100%); }
+  .placeholder-photo.tone-c { background-image: linear-gradient(135deg, var(--peach) 0%, var(--pink-deep) 100%); }
+  .placeholder-photo.tone-d { background-image: linear-gradient(135deg, var(--pink-deep) 0%, var(--mint) 100%); }
+  /* Foto beneran dimasukin sebagai <img> di dalam div-nya (bukan background-image lagi),
+     soalnya cuma <img> yang bisa bikin box-nya otomatis ngikutin bentuk asli foto --
+     itu satu-satunya cara foto kelihatan FULL (ngisi penuh, gak ada sisa ruang kosong)
+     SEKALIGUS gak kepotong sama sekali. Icon/label placeholder otomatis ilang begitu
+     ada <img> di dalamnya. */
+  .placeholder-photo img { display: block; width: 100%; height: auto; }
+  .placeholder-photo:has(img) .lbl, .placeholder-photo:has(img) svg.icon { display: none; }
+  /* Kalau justru MAU foto di-crop rapi ngisi penuh kotak yang ukurannya tetap (misalnya
+     biar rapi sejajar di grid kecil kayak cover lagu), tambahin class "crop-fill". */
+  .placeholder-photo.crop-fill img { height: 100%; object-fit: cover; }
+
+  .pill-btn {
+    display: inline-flex; align-items: center; gap: 8px; background: var(--pink); color: #fffaf7; border: none;
+    padding: 13px 26px; border-radius: 999px; font-weight: 700; font-size: 0.94rem; font-family: 'Baloo 2', sans-serif;
+    box-shadow: 0 10px 22px var(--shadow);
+  }
+  .pill-btn.ghost { background: transparent; color: var(--pink-deep); border: 1.5px solid var(--pink); box-shadow: none; }
+
+  .placeholder-text { color: var(--pink-deep); font-style: italic; }
+
+  /* ---------------- Home ---------------- */
+  .hero-copy { text-align: center; max-width: 580px; margin: 0 auto 32px; }
+  .hero-copy h1 {
+    font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.15; margin: 0 0 14px; text-wrap: balance;
+  }
+  .hero-copy h1 em { font-style: normal; color: var(--pink-deep); }
+  .hero-copy p { color: var(--ink-soft); font-size: 1.02rem; margin: 0 0 26px; }
+
+  .hero-photo { height: 360px; margin: 0 6px; }
+
+  .stats-bar {
+    background: var(--card); border-radius: 18px; box-shadow: 0 18px 34px var(--shadow);
+    display: grid; grid-template-columns: repeat(3, 1fr); max-width: 620px; margin: -46px auto 0;
+    position: relative; z-index: 2; padding: 22px 10px;
+  }
+  .stat { text-align: center; padding: 0 8px; border-right: 1px solid var(--line); }
+  .stat:last-child { border-right: none; }
+  .stat .ic { color: var(--pink); font-size: 1.15rem; margin-bottom: 6px; }
+  .stat .lbl { font-size: 0.7rem; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .stat .val { font-weight: 700; color: var(--ink); font-size: 1.05rem; font-variant-numeric: tabular-nums; font-family: 'Baloo 2', sans-serif; }
+  .stat .val.script { font-family: 'Caveat', cursive; font-size: 1.35rem; color: var(--pink-deep); }
+  @media (max-width: 620px) { .stat .lbl { font-size: 0.6rem; } .stat .val { font-size: 0.85rem; } }
+
+  .home-note { text-align: center; font-size: 0.85rem; color: var(--ink-soft); max-width: 460px; margin: 60px auto 0; font-style: italic; }
+
+  /* ---------------- Timeline ---------------- */
+  .tl-row { display: grid; grid-template-columns: 1fr 40px 1fr; align-items: center; margin-bottom: 28px; }
+  .tl-row .tl-line-col { display: flex; flex-direction: column; align-items: center; align-self: stretch; }
+  .tl-row .tl-dot {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--card); border: 2px solid var(--pink);
+    color: var(--pink); display: flex; align-items: center; justify-content: center; font-size: 0.85rem;
+    flex-shrink: 0; box-shadow: 0 4px 10px var(--shadow);
+  }
+  .tl-row .tl-stem { width: 2px; flex: 1; background: var(--pink); opacity: 0.5; }
+  .tl-row:first-child .tl-stem.top, .tl-row:last-child .tl-stem.bottom { visibility: hidden; }
+  .tl-card { background: var(--card); border-radius: 14px; padding: 18px 20px; box-shadow: 0 10px 22px var(--shadow); }
+  .tl-card .tag { font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--pink-deep); font-weight: 700; margin-bottom: 4px; display: block; }
+  .tl-card h3 { font-family: 'Baloo 2', sans-serif; font-size: 1.25rem; margin: 0 0 6px; }
+  .tl-card p { margin: 0; color: var(--ink-soft); font-size: 0.9rem; line-height: 1.55; }
+  .tl-photo { height: 150px;}
+  @media (max-width: 680px) {
+    .tl-row { grid-template-columns: 34px 1fr; }
+    .tl-row .tl-line-col { grid-row: 1 / 3; }
+    .tl-photo { display: none; }
+    .tl-row:nth-child(even) .tl-line-col { order: -1; }
+  }
+
+  /* ---------------- Gallery ---------------- */
+  .filter-row { display: flex; justify-content: center; gap: 10px; margin-bottom: 28px; flex-wrap: wrap; }
+  .filter-pill { border: 1.5px solid var(--line); background: var(--card); color: var(--ink-soft); padding: 8px 18px; border-radius: 999px; font-size: 0.85rem; font-weight: 600; }
+  .filter-pill.active { background: var(--pink); border-color: var(--pink); color: #fffaf7; }
+
+  /* Kolom masonry (bukan grid rapi berbaris) -- soalnya sekarang tinggi tiap foto
+     ngikutin bentuk aslinya (biar full & gak kepotong), jadi tingginya beda-beda.
+     Masonry ngatur foto-foto itu numpuk rapi per kolom tanpa nyisain celah aneh. */
+  .gallery-grid { columns: 2; column-gap: 16px; }
+  @media (min-width: 681px) { .gallery-grid { columns: 4; } }
+  .gallery-grid .placeholder-photo { height: 150px; margin-bottom: 16px; break-inside: avoid; }
+  .gallery-grid .placeholder-photo .cap {
+    position: absolute; bottom: 8px; left: 8px; max-width: calc(100% - 16px);
+    font-size: 0.68rem; color: #fffaf7; background: rgba(61, 47, 51, 0.55); backdrop-filter: blur(3px);
+    padding: 4px 10px; border-radius: 999px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .gallery-grid .g-more { display: none; }
+  .gallery-grid .g-more.show { display: flex; }
+  .load-more-wrap { text-align: center; margin-top: 30px; }
+  .load-more-wrap.hidden { display: none; }
+
+  /* ---------------- Playlist ---------------- */
+  .playlist-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 780px) { .playlist-grid { grid-template-columns: 1fr; } }
+  .track-list { background: var(--card); border-radius: 16px; padding: 8px; box-shadow: 0 12px 26px var(--shadow); }
+  .track { display: flex; align-items: center; gap: 14px; padding: 12px 12px; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .track:last-child { border-bottom: none; }
+  .track.now-playing-row { background: var(--pink-soft); border-radius: 10px; }
+  .track .art { width: 46px; height: 46px; border-radius: 8px; flex-shrink: 0; }
+  .track .meta { flex: 1; min-width: 0; }
+  .track .meta .t { font-weight: 700; font-size: 0.92rem; font-family: 'Baloo 2', sans-serif; }
+  .track .meta .a { font-size: 0.78rem; color: var(--ink-soft); }
+  .track .play-mini { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--line); background: none; color: var(--pink-deep); display: flex; align-items: center; justify-content: center; }
+
+  .now-playing { background: var(--card); border-radius: 16px; padding: 18px; box-shadow: 0 12px 26px var(--shadow); }
+  .now-playing .np-photo { height: 190px; margin-bottom: 16px; }
+  .now-playing .np-title { font-weight: 700; font-size: 1.02rem; display: flex; justify-content: space-between; align-items: center; font-family: 'Baloo 2', sans-serif; }
+  .now-playing .np-artist { color: var(--ink-soft); font-size: 0.85rem; margin-bottom: 14px; }
+  .progress { height: 4px; border-radius: 2px; background: var(--pink-soft); overflow: hidden; margin-bottom: 6px; cursor: pointer; }
+  .progress .bar { height: 100%; width: 0%; background: var(--pink); transition: width .1s linear; }
+  .time-row { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; margin-bottom: 16px; }
+  .transport { display: flex; align-items: center; justify-content: center; gap: 20px; }
+  .transport button { background: none; border: none; color: var(--ink-soft); font-size: 1.1rem; }
+  .transport button.active { color: var(--pink-deep); }
+  .transport .big { width: 48px; height: 48px; border-radius: 50%; background: var(--pink); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+  .playlist-note { text-align: center; font-size: 0.82rem; color: var(--ink-soft); font-style: italic; margin-top: 22px; }
+  .waveform { display: flex; align-items: flex-end; gap: 2px; height: 26px; margin-top: 16px; }
+  .waveform span { flex: 1; background: var(--pink-soft); border-radius: 2px; }
+  .waveform span.active { background: var(--pink); }
+
+  /* ---------------- Letter ---------------- */
+  .letter-grid { display: grid; grid-template-columns: 1.2fr 0.9fr; gap: 30px; align-items: start; }
+  @media (max-width: 780px) { .letter-grid { grid-template-columns: 1fr; } }
+  .letter-card { background: var(--card); border-radius: 18px; padding: 34px 32px; box-shadow: 0 14px 30px var(--shadow); }
+  .letter-card .dear { font-family: 'Baloo 2', sans-serif; font-size: 1.3rem; margin: 0 0 16px; color: var(--pink-deep); }
+  .letter-card p { color: var(--ink-soft); line-height: 1.75; font-size: 0.95rem; margin: 0 0 16px; }
+  .letter-card .sign { text-align: right; margin-top: 22px; }
+  .letter-card .sign .from { font-size: 0.8rem; color: var(--ink-soft); }
+  .letter-card .sign .name { font-family: 'Caveat', cursive; font-size: 1.6rem; color: var(--pink-deep); }
+
+  .letter-side { position: relative; padding: 26px 14px 0; }
+  .polaroid-frame {
+    background: var(--card); padding: 14px 14px 44px; border-radius: 3px; box-shadow: 0 18px 34px var(--shadow);
+    transform: rotate(3deg); max-width: 300px; margin: 0 auto; position: relative;
+  }
+  .polaroid-frame .lp { height: 230px; border-radius: 2px; }
+  .washi-tape {
+    position: absolute; top: -16px; left: 50%; width: 106px; height: 32px; transform: translateX(-50%) rotate(-3deg);
+    background:
+      repeating-linear-gradient(115deg, rgba(255,255,255,0.18) 0 2px, transparent 2px 7px),
+      linear-gradient(180deg, color-mix(in srgb, var(--mint) 55%, #eef6f2), color-mix(in srgb, var(--mint) 30%, #eef6f2));
+    clip-path: polygon(2% 8%, 6% 0%, 3% 22%, 7% 38%, 2% 52%, 6% 68%, 3% 84%, 5% 100%, 95% 100%, 97% 82%, 94% 66%, 98% 50%, 94% 34%, 97% 18%, 95% 0%);
+    opacity: 0.92;
+    box-shadow: 0 6px 16px var(--shadow), 0 0 22px color-mix(in srgb, var(--mint) 35%, transparent);
+  }
+  .letter-confetti {
+    position: absolute; right: -18px; top: 30%; width: 100px; height: 100px;
+    color: var(--peach); opacity: 0.8; pointer-events: none;
+  }
+  @media (max-width: 780px) { .letter-confetti { display: none; } }
+  .sticky-note {
+    background: var(--card-tint); border-radius: 4px; padding: 16px 18px; font-family: 'Caveat', cursive;
+    font-size: 1.2rem; color: var(--pink-deep); line-height: 1.35; text-align: center;
+    box-shadow: 0 12px 24px var(--shadow); transform: rotate(-3deg); margin: -32px 14px 0 auto; width: 66%; max-width: 230px;
+    position: relative; z-index: 2;
+  }
+  .sticky-note .hrt { display: block; margin-top: 6px; color: var(--pink); }
+
+  /* ---------------- About ---------------- */
+  .about-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 36px; align-items: start; }
+  @media (max-width: 780px) { .about-grid { grid-template-columns: 1fr; } }
+  .about-photo { height: 380px; }
+  /* Semua slot foto (hero/timeline/galeri/playlist/surat/tentang) yang udah ada <img>-nya
+     otomatis lepas dari tinggi tetap di atas, biar box-nya beneran ngikutin bentuk foto
+     aslinya -- full, gak kepotong, gak nyisain celah kosong. Kalau div-nya dikasih class
+     "crop-fill", tetep pake tinggi tetap + foto di-crop rapi ngisi penuh (lihat komentar
+     .crop-fill di bagian atas). */
+  .placeholder-photo:has(img):not(.crop-fill) { height: auto; }
+  .about-list .item { display: flex; gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+  .about-list .item:last-child { border-bottom: none; }
+  .about-list .ic { width: 42px; height: 42px; border-radius: 50%; background: var(--pink-soft); color: var(--pink-deep); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.05rem; }
+  .about-list h3 { font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; margin: 0 0 4px; }
+  .about-list p { margin: 0; color: var(--ink-soft); font-size: 0.9rem; line-height: 1.55; }
+
+  .quote-card { background: var(--pink-soft); border-radius: 16px; padding: 30px; text-align: center; margin-top: 40px; }
+  .quote-card .mark { font-family: 'Baloo 2', sans-serif; font-size: 2rem; color: var(--pink); line-height: 1; }
+  .quote-card p { font-family: 'Baloo 2', sans-serif; font-size: 1.1rem; margin: 6px 0 0; color: var(--ink); }
+
+  .divider-quote { text-align: center; margin-top: 58px; position: relative; z-index: 1; }
+  .divider-quote .dq-line { display: flex; align-items: center; justify-content: center; gap: 14px; color: var(--pink); margin-bottom: 16px; }
+  .divider-quote .dq-line .l { width: 64px; height: 1px; background: linear-gradient(90deg, transparent, var(--pink)); }
+  .divider-quote .dq-line .l.r { background: linear-gradient(90deg, var(--pink), transparent); }
+  .divider-quote p { font-family: 'Baloo 2', sans-serif; color: var(--ink-soft); font-size: 1.05rem; margin: 0 0 10px; max-width: 46ch; margin-left: auto; margin-right: auto; }
+
+  .corner-confetti { position: absolute; left: -6px; bottom: 4px; width: 120px; height: 120px; opacity: 0.4; color: var(--pink); pointer-events: none; z-index: 0; }
+  @media (max-width: 780px) { .corner-confetti { width: 80px; height: 80px; opacity: 0.28; } }
+  @media (max-width: 480px) { .corner-confetti { display: none; } }
+
+  footer.site-foot { text-align: center; padding: 30px 20px 50px; color: var(--ink-soft); font-size: 0.8rem; border-top: 1px solid var(--line); margin-top: 10px; }
+  footer.site-foot .h { color: var(--pink); }
+</style>
+</head>
+<body>
+
+<!--
+  CARA GANTI FOTO:
+  Tiap slot foto adalah <div class="placeholder-photo ..."> (dipakai di hero, timeline,
+  galeri, playlist, foto surat, dan foto tentang). Buat masukin foto, tinggal taruh
+  <img> di DALAM div itu, misalnya:
+
+    <div class="placeholder-photo tone-b"><img src="galeri-1.jpg" alt=""></div>
+
+  PENTING: file foto (galeri-1.jpg dst) harus ada di FOLDER YANG SAMA PERSIS dengan file
+  HTML ini (bukan di dalam subfolder) -- atau di dalam folder "foto/" kayak contoh yang
+  udah ada di galeri (src="foto/nama-file.jpeg"). Kalau file HTML ini kamu pindahin ke
+  folder lain, ikutan pindahin juga folder fotonya biar linknya gak putus.
+
+  Defaultnya foto SELALU tampil FULL & UTUH -- box-nya otomatis ngikutin bentuk asli
+  foto (ngisi penuh lebar slot-nya, tingginya nyesuain), jadi gak ada sisi yang kepotong
+  DAN gak ada celah/ruang kosong nganggur di sekitarnya. Ikon & teks placeholder di
+  dalam div otomatis ilang sendiri begitu ada <img>-nya, jadi gak perlu dihapus manual.
+
+  KALAU JUSTRU MAU foto di-crop rapi ngisi penuh kotak yang ukurannya tetap (misalnya
+  biar rapi sejajar kayak cover lagu kecil), tinggal tambahin class "crop-fill" di
+  div-nya, contoh:
+
+    <div class="placeholder-photo tone-b crop-fill"><img src="galeri-1.jpg" alt=""></div>
+
+  (Cara lama pake style="background-image:url(...)" udah gak dipakai lagi -- ganti ke <img> di atas.)
+
+  SORTIR GALERI:
+  Tiap foto di galeri punya atribut data-cat="seru" atau data-cat="random" (bisa kamu tambah
+  kategori baru sendiri, tinggal bikin tombol filter baru di .filter-row dengan data-filter
+  yang sama nilainya, terus kasih data-cat yang cocok di foto-fotonya). Tombol filter di atas
+  galeri otomatis nyaring foto sesuai kategori yang dipilih.
+-->
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.7l2.7 5.9 6.4.6-4.9 4.4 1.5 6.4L12 16.6l-5.7 3.4 1.5-6.4-4.9-4.4 6.4-.6z"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><line x1="3.5" y1="10" x2="20.5" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></symbol>
+    <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8h3.2l1.8-2.6h6l1.8 2.6H20v11.5H4z"/><circle cx="12" cy="13.3" r="3.6"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path class="fill" d="M8 5.5v13l11-6.5z"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><rect class="fill" x="6" y="5" width="4.5" height="14"/><rect class="fill" x="13.5" y="5" width="4.5" height="14"/></symbol>
+    <symbol id="i-prev" viewBox="0 0 24 24"><path class="fill" d="M6 5h2v14H6zM19 5.5v13L9 12z"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path class="fill" d="M16 5h2v14h-2zM5 5.5v13l10-6.5z"/></symbol>
+    <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M3 6h3.5L15 18h3.5M3 18h3.5L11 12M15 6h3.5"/><polyline points="16 4 18.5 6 16 8"/><polyline points="16 16 18.5 18 16 20"/></symbol>
+    <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M4 7h13l-2.5-2.5M20 17H7l2.5 2.5"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></symbol>
+    <symbol id="i-confetti" viewBox="0 0 100 100">
+      <g fill="currentColor">
+        <path d="M18 62l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" opacity="0.9"/>
+        <path d="M55 15l2.4 6.4 6.4 2.4-6.4 2.4-2.4 6.4-2.4-6.4-6.4-2.4 6.4-2.4z" opacity="0.8"/>
+        <path d="M78 55l1.8 5 5 1.8-5 1.8-1.8 5-1.8-5-5-1.8 5-1.8z" opacity="0.75"/>
+        <path d="M35 85l1.6 4.4 4.4 1.6-4.4 1.6-1.6 4.4-1.6-4.4-4.4-1.6 4.4-1.6z" opacity="0.7"/>
+        <circle cx="40" cy="35" r="3"/>
+        <circle cx="63" cy="72" r="2.4"/>
+        <circle cx="85" cy="30" r="2"/>
+        <circle cx="15" cy="18" r="2.2"/>
+        <circle cx="10" cy="45" r="1.8"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<nav class="site-nav">
+  <div class="wrap">
+    <div class="logo"><svg class="icon filled" style="width:.85em;height:.85em"><use href="#i-star"/></svg> Diary Bestie</div>
+    <div class="nav-links">
+      <button data-nav="home" class="active">Beranda</button>
+      <button data-nav="timeline">Momen Kita</button>
+      <button data-nav="gallery">Galeri</button>
+      <button data-nav="playlist">Playlist</button>
+      <button data-nav="letter">Surat</button>
+      <button data-nav="about">Tentang</button>
+    </div>
+    <div class="nav-right">
+      <button class="nav-star" data-nav="home" aria-label="Ke beranda"><svg class="icon filled"><use href="#i-star"/></svg></button>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Buka menu" aria-expanded="false">
+        <svg class="icon" id="nav-toggle-icon"><use href="#i-menu"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="nav-mobile" id="nav-mobile">
+    <button data-nav="home">Beranda</button>
+    <button data-nav="timeline">Momen Kita</button>
+    <button data-nav="gallery">Galeri</button>
+    <button data-nav="playlist">Playlist</button>
+    <button data-nav="letter">Surat</button>
+    <button data-nav="about">Tentang</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <!-- HOME -->
+  <section class="page" id="page-home">
+    <div class="hero-copy">
+      <div class="eyebrow-divider"><span class="l"></span><svg class="icon filled" style="width:.8em;height:.8em"><use href="#i-sparkle"/></svg><span class="l r"></span></div>
+      <h1>Diary Kita Berdua,<br><em>Rusuh Terus Sampai Tua</em></h1>
+      <p>Satu halaman kecil buat nyimpen momen, foto receh, dan alasan-alasan kenapa untung banget punya sahabat kayak kamu.</p>
+      <button class="pill-btn" data-nav="timeline">Mulai Jelajahi <svg class="icon" style="stroke:#fffaf7"><use href="#i-arrow"/></svg></button>
+    </div>
+
+    <div class="placeholder-photo hero-photo">
+      <img src="foto/image-9.jpeg"  alt="pertama ketemu">
+<!--      <span class="lbl">foto kalian berdua di sini</span>-->
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat">
+        <div class="ic"><svg class="icon"><use href="#i-calendar"/></svg></div>
+        <div class="lbl">Kenal Sejak</div>
+        <div class="val" id="stat-date">19 JULI 2026</div>
+      </div>
+      <div class="stat">
+        <div class="ic"><svg class="icon filled"><use href="#i-star"/></svg></div>
+        <div class="lbl">Hari Bareng</div>
+        <div class="val" id="stat-days"></div>
+      </div>
+      <div class="stat">
+        <div class="ic"><svg class="icon"><use href="#i-sparkle"/></svg></div>
+        <div class="lbl">Julukan Kita</div>
+        <div class="val script">Rusuh Squad</div>
+      </div>
+    </div>
+
+<!--    <p class="home-note">*Tanggal &amp; hitungan hari di atas masih contoh &mdash; ganti dengan tanggal kalian pertama kenalan, nanti angkanya otomatis kehitung.</p>-->
+    <svg class="icon corner-confetti" viewBox="0 0 100 100"><use href="#i-confetti"/></svg>
+  </section>
+
+  <!-- TIMELINE -->
+  <section class="page" id="page-timeline">
+    <div class="section-head">
+      <span class="head-sticker r1"><svg class="icon filled" style="width:.9em;height:.9em"><use href="#i-star"/></svg></span>
+      <h2>Momen Kita</h2>
+      <p>Perjalanan singkat pertemanan kita dari awal akrab</p>
+    </div>
+    <div class="timeline">
+      <div class="tl-row">
+        <div class="placeholder-photo tl-photo"><img src="foto/image-7.jpg"  alt="pertama ketemu"></div>
+        <div class="tl-line-col"><div class="tl-stem top"></div><div class="tl-dot"><svg class="icon filled" style="width:.7em;height:.7em"><use href="#i-star"/></svg></div><div class="tl-stem bottom"></div></div>
+        <div class="tl-card"><span class="tag">19 JULI 2026</span><h3>Pertama Ketemu</h3><p>Berawal dari ngebantuin kelarin laporan PKL-nya. Dia bingung banget gara-gara ga ngerti cara buat laporan, panjang lebar bahas laproran PKL, revisi bareng, meet barang sambil ngerjain. Begadang sampai malem gara-gara ngerjain laporan.  </p></div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-card"><span class="tag">21 JULI 2026</span><h3>Mulai Deket</h3><p>Setelah bahas PKL, kita bahas topik pengen buat grup keluarga yang dimana isinya cucu-cucu dari mbah lasiyem. Dimulai dari sini kita berdua mulai akrab cerita panjang lebar tentang masa-masa di kampung ingin foto keluarga bareng, ingin cucu-cucunya akrab, dan bahas hal-hal random. </p></div>
+        <div class="tl-line-col"><div class="tl-stem top"></div><div class="tl-dot"><svg class="icon filled" style="width:.7em;height:.7em"><use href="#i-star"/></svg></div><div class="tl-stem bottom"></div></div>
+        <div class="placeholder-photo tl-photo tone-b"><img src="foto/image-7.jpg"  alt="pertama ketemu"></div>
+      </div>
+      <div class="tl-row">
+        <div class="placeholder-photo tl-photo tone-c"><img src="foto/image-7.jpg" alt="trip dadakan"></div>
+        <div class="tl-line-col"><div class="tl-stem top"></div><div class="tl-dot"><svg class="icon filled" style="width:.7em;height:.7em"><use href="#i-star"/></svg></div><div class="tl-stem bottom"></div></div>
+        <div class="tl-card"><span class="tag">2 AGUSTUS 2026</span><h3>Trip Pertama Bareng</h3><p>Trip pertama kali kita, kepuncak bogor seru banget hal paling berkesan adalah kita berdua bertukar cerita dan ketawa dimotor sepanjang jalan sambil menuju puncak bogor. dan sialnya kita nyasar, awal mula pengen pergi kecurug tapi malah kekampung curug huhuhu. Tapi untuk perjalanan 4 jam lamanya worth it ketika sudah sampai sana. disana kita makan dan minum sambil bertukar cerita, canda, dan tawa. seseru ituu. </p></div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-card"><span class="tag">Contoh &middot; Momen 4</span><h3>Ulang Tahun Pertemanan</h3><p>Rayain udah berapa lama kenal &mdash; boleh tambah foto atau surat kecil di sini.</p></div>
+        <div class="tl-line-col"><div class="tl-stem top"></div><div class="tl-dot"><svg class="icon filled" style="width:.7em;height:.7em"><use href="#i-star"/></svg></div><div class="tl-stem bottom"></div></div>
+        <div class="placeholder-photo tl-photo tone-d"><img src="foto/image-7.jpg"  alt="pertama ketemu"></div>
+      </div>
+    </div>
+    <div class="divider-quote">
+      <div class="dq-line"><span class="l"></span><svg class="icon filled" style="width:.8em;height:.8em"><use href="#i-sparkle"/></svg><span class="l r"></span></div>
+      <p class="placeholder-text">"kita diett bareng yuu"</p>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="page" id="page-gallery">
+    <div class="section-head">
+      <span class="head-sticker r2"><svg class="icon filled" style="width:.9em;height:.9em"><use href="#i-camera"/></svg></span>
+      <h2>Galeri Kita</h2>
+      <p>Kumpulan momen receh</p>
+    </div>
+    <div class="filter-row">
+      <button class="filter-pill active" data-filter="all">Semua</button>
+      <button class="filter-pill" data-filter="seru">Momen Seru</button>
+      <button class="filter-pill" data-filter="random">Random</button>
+    </div>
+    <div class="gallery-grid" id="gallery-grid">
+      <div class="placeholder-photo" data-cat="seru"><img src="foto/image-1.jpeg" alt="study bareng"><span class="cap">study bareng</span></div>
+      <div class="placeholder-photo tone-b" data-cat="seru"><img src="foto/image-2.jpeg" alt="trip dadakan"><span class="cap">trip dadakan</span></div>
+      <div class="placeholder-photo tone-c" data-cat="seru"><img src="foto/image-3.jpeg" alt="ultah kamu"><span class="cap">ultah kamu</span></div>
+      <div class="placeholder-photo tone-d" data-cat="random"><img src="foto/image-4.jpeg" alt="makan receh"><span class="cap">makan receh</span></div>
+      <div class="placeholder-photo tone-b" data-cat="random"><img src="foto/image-5.jpeg" alt="circle time"><span class="cap">circle time</span></div>
+      <div class="placeholder-photo tone-c" data-cat="random"><img src="foto/image-6.jpeg" alt="random moment"><span class="cap">random moment</span></div>
+      <div class="placeholder-photo" data-cat="seru"><img src="foto/image-8.png" alt="random moment"><span class="cap">movie night</span></div>
+      <div class="placeholder-photo tone-d" data-cat="random"><img src="foto/image-9.jpeg" alt="random moment"><span class="cap">selfie iseng</span></div>
+      <div class="placeholder-photo tone-c g-more" data-cat="seru"><img src="foto/image-10.jpeg" alt="random moment"><span class="cap">nangis ketawa bareng</span></div>
+      <div class="placeholder-photo g-more" data-cat="seru"><img src="foto/image-6.jpeg" alt="random moment"><span class="cap">liburan kecil</span></div>
+      <div class="placeholder-photo tone-b g-more" data-cat="random"><img src="foto/image-11.jpeg" alt="random moment"><span class="cap">momen konyol</span></div>
+      <div class="placeholder-photo tone-d g-more" data-cat="random"><img src="foto/image-14.jpeg" alt="random moment"><span class="cap">peluk squad</span></div>
+      <div class="placeholder-photo tone-d g-more" data-cat="random"><img src="foto/image-12.jpeg" alt="random moment"><span class="cap">peluk squad</span></div>
+      <div class="placeholder-photo tone-d g-more" data-cat="random"><img src="foto/image-13.jpeg" alt="random moment"><span class="cap">peluk squad</span></div>
+      <div class="placeholder-photo tone-d g-more" data-cat="random"><img src="foto/image-15.jpeg" alt="random moment"><span class="cap">peluk squad</span></div>
+      <div class="placeholder-photo tone-d g-more" data-cat="random"><img src="foto/image-16.jpeg" alt="random moment"><span class="cap">peluk squad</span></div>
+      <div class="placeholder-photo tone-d g-more" data-cat="random"><img src="foto/image-17.jpeg" alt="random moment"><span class="cap">peluk squad</span></div>
+      <div class="placeholder-photo tone-d g-more" data-cat="random"><img src="foto/image-18.jpeg" alt="random moment"><span class="cap">peluk squad</span></div>
+      <div class="placeholder-photo tone-d g-more" data-cat="random"><img src="foto/image-19.jpeg" alt="random moment"><span class="cap">peluk squad</span></div>
+      <div class="placeholder-photo tone-d g-more" data-cat="random"><img src="foto/image-20.jpeg" alt="random moment"><span class="cap">peluk squad</span></div>
+      <div class="placeholder-photo tone-d g-more" data-cat="random"><img src="foto/image-21.jpeg" alt="random moment"><span class="cap">peluk squad</span></div>
+      <div class="placeholder-photo tone-d g-more" data-cat="random"><img src="foto/image-22.jpeg" alt="random moment"><span class="cap">peluk squad</span></div>
+      <div class="placeholder-photo tone-d g-more" data-cat="random"><img src="foto/image-23.jpeg" alt="random moment"><span class="cap">peluk squad</span></div>
+      <div class="placeholder-photo tone-d g-more" data-cat="random"><img src="foto/image-24.jpeg" alt="random moment"><span class="cap">peluk squad</span></div>
+      <div class="placeholder-photo tone-d g-more" data-cat="random"><img src="foto/image-25.jpeg" alt="random moment"><span class="cap">peluk squad</span></div>
+      <div class="placeholder-photo tone-d g-more" data-cat="random"><img src="foto/image-26.jpeg" alt="random moment"><span class="cap">peluk squad</span></div>
+      <div class="placeholder-photo tone-d g-more" data-cat="random"><img src="foto/image-26.jpeg" alt="random moment"><span class="cap">peluk squad</span></div>
+      <div class="placeholder-photo tone-d g-more" data-cat="random"><img src="foto/image-26.jpeg" alt="random moment"><span class="cap">peluk squad</span></div>
+    </div>
+    <div class="load-more-wrap" id="load-more-wrap">
+      <button class="pill-btn ghost" id="load-more-btn">Muat Lebih Banyak <svg class="icon" style="stroke:var(--pink-deep)"><use href="#i-chevron"/></svg></button>
+    </div>
+    <div class="divider-quote">
+      <div class="dq-line"><span class="l"></span><svg class="icon filled" style="width:.8em;height:.8em"><use href="#i-sparkle"/></svg><span class="l r"></span></div>
+      <p class="placeholder-text">"foto-foto random kita yang lucu-lucu"</p>
+    </div>
+  </section>
+
+  <!-- PLAYLIST -->
+  <section class="page" id="page-playlist">
+    <div class="section-head">
+      <span class="head-sticker r3"><svg class="icon filled" style="width:.9em;height:.9em"><use href="#i-music"/></svg></span>
+      <h2>Playlist Rusuh</h2>
+      <p>Suasana asyik, lagu favorit, dan cerita di balik setiap trek.</p>
+    </div>
+    <!--
+      CARA PASANG LAGU ASLI:
+      Isi atribut data-src di tiap <div class="track"> dengan path/URL file MP3 kalian
+      (file audio ditaruh sefolder sama HTML ini, atau pakai link langsung), contoh:
+        <div class="track" data-src="lagu/senyum.mp3" data-title="Judul Lagu" data-artist="Nama Artis">
+      Klik baris lagu atau tombol play-nya bakal muter file itu beneran lewat player
+      di sebelah kanan (progress bar, waktu, next/prev, semuanya udah fungsional).
+    -->
+    <audio id="player" preload="none"></audio>
+    <div class="playlist-grid">
+      <div class="track-list">
+        <div class="track" data-src="song/Tulus_Teh_Hijau.mp3" data-title="Teh Hijau" data-artist="Artis &middot; Tulus">
+          <div class="placeholder-photo art crop-fill "><img src="foto/playlist/teh-hijau.jpeg" alt=""></div>
+          <div class="meta"><div class="t">Teh Hijau</div><div class="a">Artis &middot; Tulus</div></div>
+          <button class="play-mini"><svg class="icon filled" style="width:.8em;height:.8em"><use href="#i-play"/></svg></button>
+        </div>
+        <div class="track" data-src="song/lany_you.mp3" data-title="You!" data-artist="Artis &middot; lany">
+          <div class="placeholder-photo art tone-b"><img src="foto/playlist/Sesi.jpeg" alt=""></div>
+          <div class="meta"><div class="t">You!</div><div class="a">Artis &middot; Lany</div></div>
+          <button class="play-mini"><svg class="icon filled" style="width:.8em;height:.8em"><use href="#i-play"/></svg></button>
+        </div>
+        <div class="track" data-src="song/Sesi-Potret.mp3" data-title='Sesi Potret"' data-artist="Artis &middot; eńau, Ari lesmana">
+          <div class="placeholder-photo art tone-c"><img src="foto/playlist/img.png"></div>
+          <div class="meta"><div class="t">Sesi Potret</div><div class="a">Artis &middot; eńau, Ari Lesmana</div></div>
+          <button class="play-mini"><svg class="icon filled" style="width:.8em;height:.8em"><use href="#i-play"/></svg></button>
+        </div>
+        <div class="track" data-src="" data-title="Lagu Karaoke Wajib" data-artist="Artis &middot; contoh">
+          <div class="placeholder-photo art tone-d"></div>
+          <div class="meta"><div class="t">Lagu Karaoke Wajib</div><div class="a">Artis &middot; contoh</div></div>
+          <button class="play-mini"><svg class="icon filled" style="width:.8em;height:.8em"><use href="#i-play"/></svg></button>
+        </div>
+        <div class="track" data-src="" data-title="Lagu Favorit #5" data-artist="Artis &middot; contoh">
+          <div class="placeholder-photo art"></div>
+          <div class="meta"><div class="t">Lagu Favorit #5</div><div class="a">Artis &middot; contoh</div></div>
+          <button class="play-mini"><svg class="icon filled" style="width:.8em;height:.8em"><use href="#i-play"/></svg></button>
+        </div>
+      </div>
+
+      <div class="now-playing">
+        <div class="placeholder-photo np-photo tone-c"><img src="foto/image-7.jpg" alt=""></div>
+        <div class="np-title"><span>Lagu "Kita Banget"</span> <svg class="icon" style="color:var(--pink)"><use href="#i-star"/></svg></div>
+        <div class="np-artist">Artis &middot; contoh</div>
+        <div class="progress" id="np-progress"><div class="bar"></div></div>
+        <div class="time-row"><span>0:00</span><span>0:00</span></div>
+        <div class="transport">
+          <button id="np-shuffle"><svg class="icon filled"><use href="#i-shuffle"/></svg></button>
+          <button id="np-prev"><svg class="icon filled"><use href="#i-prev"/></svg></button>
+          <button class="big" id="np-playbtn"><svg class="icon filled" style="stroke:none;fill:#fffaf7"><use href="#i-play"/></svg></button>
+          <button id="np-next"><svg class="icon filled"><use href="#i-next"/></svg></button>
+          <button id="np-repeat"><svg class="icon filled"><use href="#i-repeat"/></svg></button>
+        </div>
+        <div class="waveform" id="np-wave"></div>
+      </div>
+    </div>
+<!--    <p class="playlist-note">*Klik lagu buat muter beneran &mdash; tapi filenya masih kosong sampai kamu isi data-src. Kirim daftar lagu favorit kalian, nanti aku bantu isi juga.</p>-->
+    <div class="divider-quote">
+      <div class="dq-line"><span class="l"></span><svg class="icon filled" style="width:.8em;height:.8em"><use href="#i-sparkle"/></svg><span class="l r"></span></div>
+      <p class="placeholder-text">"[satu baris cerita di balik playlist kalian]"</p>
+    </div>
+  </section>
+
+  <!-- LETTER -->
+  <section class="page" id="page-letter">
+    <div class="section-head">
+      <span class="head-sticker r1"><svg class="icon filled" style="width:.9em;height:.9em"><use href="#i-heart"/></svg></span>
+      <h2>Surat Buat Bestii</h2>
+      <p>Sedikit kata, buat seseorang yang selalu ada dari dulu.</p>
+    </div>
+    <div class="letter-grid">
+      <div class="letter-card">
+        <p class="dear">Dear <span class="placeholder-text">besti</span>,</p>
+        <p>Makasih ya udah selalu ada, di hari yang biasa aja maupun yang berantakan. <span class="placeholder-text">[ceritain satu momen favorit kalian di sini]</span> &mdash; itu salah satu yang paling aku inget.</p>
+        <p>Gak semua orang seberuntung aku yang punya temen kayak kamu &mdash; yang selalu bisa diajak cerita, ketawa bareng, sampai nangis bareng juga.</p>
+        <p><span class="placeholder-text">[tambahin alasan-alasan kenapa kamu bersyukur punya dia]</span></p>
+        <div class="sign">
+          <div class="from">bestii selamanya,</div>
+          <div class="name">Always care</div>
+        </div>
+      </div>
+      <div class="letter-side">
+        <div class="polaroid-frame">
+          <span class="washi-tape"></span>
+          <div class="placeholder-photo lp tone-b"><img src="foto/image-7.jpg"></div>
+        </div>
+        <svg class="icon letter-confetti" viewBox="0 0 100 100"><use href="#i-confetti"/></svg>
+        <div class="sticky-note">makasih udah jadi rumah ternyaman buat cerita<span class="hrt"><svg class="icon filled" style="width:.9em;height:.9em"><use href="#i-heart"/></svg></span></div>
+      </div>
+    </div>
+    <div class="divider-quote">
+      <div class="dq-line"><span class="l"></span><svg class="icon filled" style="width:.8em;height:.8em"><use href="#i-sparkle"/></svg><span class="l r"></span></div>
+      <p class="placeholder-text">"[quote penutup buat surat kalian]"</p>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="page" id="page-about">
+    <div class="section-head">
+      <span class="head-sticker r2"><svg class="icon filled" style="width:.9em;height:.9em"><use href="#i-sparkle"/></svg></span>
+      <h2>Tentang Kita Berdua</h2>
+      <p>Dua orang random yang jadi satu circle rusuh.</p>
+    </div>
+    <div class="about-grid">
+      <div class="placeholder-photo about-photo tone-d"><svg class="icon filled" style="width:2rem;height:2rem"><use href="#i-star"/></svg><span class="lbl">foto berdua</span></div>
+      <div class="about-list">
+        <div class="item">
+          <div class="ic"><svg class="icon filled" style="width:.9em;height:.9em"><use href="#i-star"/></svg></div>
+          <div><h3>Tentang Kita</h3><p><span class="placeholder-text">[ceritain gimana kalian bisa kenal / apa yang bikin klik]</span></p></div>
+        </div>
+        <div class="item">
+          <div class="ic"><svg class="icon"><use href="#i-calendar"/></svg></div>
+          <div><h3>Cerita Kita</h3><p><span class="placeholder-text">[momen-momen kecil yang berkesan buat kalian berdua]</span></p></div>
+        </div>
+        <div class="item">
+          <div class="ic"><svg class="icon"><use href="#i-music"/></svg></div>
+          <div><h3>Hal yang Kita Suka</h3><p><span class="placeholder-text">[hobi, makanan, tempat nongkrong favorit kalian]</span></p></div>
+        </div>
+        <div class="item">
+          <div class="ic"><svg class="icon"><use href="#i-sparkle"/></svg></div>
+          <div><h3>Rencana Kita</h3><p><span class="placeholder-text">[rencana seru atau trip yang pengen kalian lakuin bareng]</span></p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fun-facts">
+      <h3 class="ff-title">Fun Facts Tentang Kita <svg class="icon filled" style="width:.85em;height:.85em"><use href="#i-sparkle"/></svg></h3>
+      <div class="ff-grid">
+        <div class="ff-badge"><svg class="icon filled" style="width:1em;height:1em"><use href="#i-star"/></svg><span>Paling Bawel</span></div>
+        <div class="ff-badge tone-b"><svg class="icon filled" style="width:1em;height:1em"><use href="#i-heart"/></svg><span>Partner Nangis Ketawa</span></div>
+        <div class="ff-badge tone-c"><svg class="icon filled" style="width:1em;height:1em"><use href="#i-music"/></svg><span>Rekomendasi Lagu Nomor Satu</span></div>
+        <div class="ff-badge"><svg class="icon"><use href="#i-calendar"/></svg><span>Rekor Chat Terpanjang</span></div>
+        <div class="ff-badge tone-b"><svg class="icon filled" style="width:1em;height:1em"><use href="#i-camera"/></svg><span>Partner Kondangan</span></div>
+        <div class="ff-badge tone-c"><svg class="icon filled" style="width:1em;height:1em"><use href="#i-sparkle"/></svg><span>Paling Ngerti Kalo Lagi Bad Mood</span></div>
+      </div>
+    </div>
+
+    <div class="corkboard">
+      <h3 class="ff-title">Kata Mereka Tentang Kita <svg class="icon filled" style="width:.85em;height:.85em"><use href="#i-star"/></svg></h3>
+      <div class="cork-grid">
+        <div class="cork-note tone-a">"Duo paling kompak se-circle!"<span>&mdash; [nama temen]</span></div>
+        <div class="cork-note tone-b">"Kalau satu ilang, yang satu pasti nyariin duluan."<span>&mdash; [nama temen]</span></div>
+        <div class="cork-note tone-c">"Partner in crime yang gak ada obatnya."<span>&mdash; [nama temen]</span></div>
+      </div>
+    </div>
+
+    <div class="quote-card">
+      <div class="mark">&ldquo;</div>
+      <p><span class="placeholder-text">Aku mau kurusss</span></p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  made with <span class="h">✦</span> &middot; preview konsep &mdash; kirim foto &amp; cerita kalian buat dijadiin versi final
+</footer>
+
+<script>
+  (function () {
+    var navBtns = document.querySelectorAll('[data-nav]');
+    var pages = document.querySelectorAll('section.page');
+
+    var navToggle = document.getElementById('nav-toggle');
+    var navToggleIcon = document.getElementById('nav-toggle-icon');
+    var navMobile = document.getElementById('nav-mobile');
+
+    function closeMobileNav() {
+      if (navMobile) navMobile.classList.remove('open');
+      if (navToggle) navToggle.setAttribute('aria-expanded', 'false');
+      if (navToggleIcon) navToggleIcon.innerHTML = '<use href="#i-menu"/>';
+    }
+    if (navToggle) {
+      navToggle.addEventListener('click', function () {
+        var isOpen = navMobile.classList.toggle('open');
+        navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        navToggleIcon.innerHTML = isOpen ? '<use href="#i-close"/>' : '<use href="#i-menu"/>';
+      });
+    }
+
+    function setActiveNav(id) {
+      document.querySelectorAll('.nav-links [data-nav], .nav-mobile [data-nav]').forEach(function (b) {
+        b.classList.toggle('active', b.dataset.nav === id);
+      });
+    }
+    function goTo(id) {
+      var target = document.getElementById('page-' + id);
+      if (!target) return;
+      if (id !== 'home') document.body.classList.add('unlocked');
+      requestAnimationFrame(function () {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      setActiveNav(id);
+      closeMobileNav();
+    }
+    navBtns.forEach(function (b) { b.addEventListener('click', function () { goTo(b.dataset.nav); }); });
+
+    if ('IntersectionObserver' in window) {
+      var navObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) { if (entry.isIntersecting) setActiveNav(entry.target.id.replace('page-', '')); });
+      }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+      pages.forEach(function (p) { navObserver.observe(p); });
+    }
+
+    try {
+      var start = new Date('2026-06-19T00:00:00');
+      var now = new Date();
+      var days = Math.max(0, Math.floor((now - start) / 86400000));
+      document.getElementById('stat-days').textContent = days.toLocaleString('id-ID');
+    } catch (e) {}
+
+    var loadBtn = document.getElementById('load-more-btn');
+    if (loadBtn) {
+      loadBtn.addEventListener('click', function () {
+        document.querySelectorAll('.g-more').forEach(function (el) { el.classList.add('show'); });
+        document.getElementById('load-more-wrap').classList.add('hidden');
+      });
+    }
+
+    var galleryItems = Array.prototype.slice.call(document.querySelectorAll('#gallery-grid .placeholder-photo'));
+    var loadMoreWrap2 = document.getElementById('load-more-wrap');
+    document.querySelectorAll('[data-filter]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('[data-filter]').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        var cat = btn.getAttribute('data-filter');
+        galleryItems.forEach(function (item) {
+          if (cat === 'all') {
+            item.style.display = '';
+          } else {
+            item.style.display = (item.getAttribute('data-cat') === cat) ? 'flex' : 'none';
+          }
+        });
+        if (loadMoreWrap2) loadMoreWrap2.classList.toggle('hidden', cat !== 'all');
+      });
+    });
+
+    // ---- real audio player ----
+    var wave = document.getElementById('np-wave');
+    var waveBars = [];
+    if (wave) {
+      var heights = [40,65,30,80,55,90,45,70,35,60,85,50,25,75,40,95,55,30,65,45,80,35,60,50];
+      heights.forEach(function (h) {
+        var bar = document.createElement('span');
+        bar.style.height = h + '%';
+        wave.appendChild(bar);
+        waveBars.push(bar);
+      });
+    }
+
+    var player = document.getElementById('player');
+    var playBtn = document.getElementById('np-playbtn');
+    var progressEl = document.getElementById('np-progress');
+    var progressBar = progressEl ? progressEl.querySelector('.bar') : null;
+    var npTitle = document.querySelector('.np-title span');
+    var npArtist = document.querySelector('.np-artist');
+    var timeElapsedEl = document.querySelector('.time-row span:first-child');
+    var timeTotalEl = document.querySelector('.time-row span:last-child');
+    var prevBtn = document.getElementById('np-prev');
+    var nextBtn = document.getElementById('np-next');
+    var shuffleBtn = document.getElementById('np-shuffle');
+    var repeatBtn = document.getElementById('np-repeat');
+    var tracks = Array.prototype.slice.call(document.querySelectorAll('.track'));
+    var currentIndex = -1;
+    var shuffleOn = false;
+    var repeatOn = false;
+
+    var PLAY_ICON = '<svg class="icon filled" style="stroke:none;fill:currentColor"><use href="#i-play"/></svg>';
+    var PAUSE_ICON = '<svg class="icon filled" style="stroke:none;fill:currentColor"><use href="#i-pause"/></svg>';
+    var PLAY_ICON_BIG = '<svg class="icon filled" style="stroke:none;fill:#fffaf7"><use href="#i-play"/></svg>';
+    var PAUSE_ICON_BIG = '<svg class="icon filled" style="stroke:none;fill:#fffaf7"><use href="#i-pause"/></svg>';
+
+    function formatTime(sec) {
+      if (!isFinite(sec) || sec < 0) return '0:00';
+      var m = Math.floor(sec / 60);
+      var s = Math.floor(sec % 60);
+      return m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    function updatePlayIcons(isPlaying) {
+      if (playBtn) playBtn.innerHTML = isPlaying ? PAUSE_ICON_BIG : PLAY_ICON_BIG;
+      if (progressEl) progressEl.classList.toggle('playing', isPlaying);
+      tracks.forEach(function (tr, i) {
+        var mini = tr.querySelector('.play-mini');
+        if (!mini) return;
+        mini.innerHTML = (i === currentIndex && isPlaying) ? PAUSE_ICON : PLAY_ICON;
+      });
+    }
+
+    function loadTrack(index, autoplay) {
+      var t = tracks[index];
+      if (!t || !player) return;
+      tracks.forEach(function (tr, i) { tr.classList.toggle('now-playing-row', i === index); });
+      currentIndex = index;
+      var src = t.dataset.src || '';
+      if (npTitle) npTitle.textContent = t.dataset.title || '';
+      if (npArtist) npArtist.textContent = src ? (t.dataset.artist || '') : 'belum ada file audio — isi data-src di HTML';
+      if (progressBar) progressBar.style.width = '0%';
+      if (timeElapsedEl) timeElapsedEl.textContent = '0:00';
+      if (timeTotalEl) timeTotalEl.textContent = '0:00';
+      waveBars.forEach(function (b) { b.classList.remove('active'); });
+      if (!src) { updatePlayIcons(false); return; }
+      player.src = src;
+      if (autoplay) {
+        player.play().then(function () { updatePlayIcons(true); }).catch(function () { updatePlayIcons(false); });
+      } else {
+        updatePlayIcons(false);
+      }
+    }
+
+    function goNext() {
+      if (!tracks.length) return;
+      var next;
+      if (shuffleOn && tracks.length > 1) {
+        do { next = Math.floor(Math.random() * tracks.length); } while (next === currentIndex);
+      } else {
+        next = (currentIndex + 1 + tracks.length) % tracks.length;
+      }
+      loadTrack(next, true);
+    }
+    function goPrev() {
+      if (!tracks.length) return;
+      var prev = (currentIndex - 1 + tracks.length) % tracks.length;
+      loadTrack(prev, true);
+    }
+
+    tracks.forEach(function (t, i) {
+      var mini = t.querySelector('.play-mini');
+      if (mini) {
+        mini.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (currentIndex === i && player && !player.paused) { player.pause(); updatePlayIcons(false); }
+          else { loadTrack(i, true); }
+        });
+      }
+      t.addEventListener('click', function () { loadTrack(i, true); });
+    });
+
+    if (playBtn) {
+      playBtn.addEventListener('click', function () {
+        if (currentIndex === -1) { loadTrack(2, true); return; }
+        if (!player.src) { loadTrack(currentIndex, true); return; }
+        if (player.paused) { player.play().then(function () { updatePlayIcons(true); }).catch(function () {}); }
+        else { player.pause(); updatePlayIcons(false); }
+      });
+    }
+    if (prevBtn) prevBtn.addEventListener('click', goPrev);
+    if (nextBtn) nextBtn.addEventListener('click', goNext);
+    if (shuffleBtn) shuffleBtn.addEventListener('click', function () {
+      shuffleOn = !shuffleOn;
+      shuffleBtn.classList.toggle('active', shuffleOn);
+    });
+    if (repeatBtn) repeatBtn.addEventListener('click', function () {
+      repeatOn = !repeatOn;
+      repeatBtn.classList.toggle('active', repeatOn);
+      if (player) player.loop = false; // we handle repeat manually via 'ended'
+    });
+    if (progressEl) {
+      progressEl.addEventListener('click', function (e) {
+        if (!player || !player.duration) return;
+        var rect = progressEl.getBoundingClientRect();
+        var ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+        player.currentTime = ratio * player.duration;
+      });
+    }
+    if (player) {
+      player.addEventListener('timeupdate', function () {
+        if (!player.duration) return;
+        var pct = (player.currentTime / player.duration) * 100;
+        if (progressBar) progressBar.style.width = pct + '%';
+        if (timeElapsedEl) timeElapsedEl.textContent = formatTime(player.currentTime);
+        var activeCount = Math.round((pct / 100) * waveBars.length);
+        waveBars.forEach(function (b, i) { b.classList.toggle('active', i < activeCount); });
+      });
+      player.addEventListener('loadedmetadata', function () {
+        if (timeTotalEl) timeTotalEl.textContent = formatTime(player.duration);
+      });
+      player.addEventListener('ended', function () {
+        if (repeatOn) { player.currentTime = 0; player.play(); }
+        else { goNext(); }
+      });
+    }
+  })();
+</script>
+</body>
+</html>
